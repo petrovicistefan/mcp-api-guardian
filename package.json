@@ -3,14 +3,39 @@
   "version": "0.1.0",
   "description": "Local OpenAPI contract and breaking-change checks for AI agents",
   "type": "module",
-  "bin": { "mcp-api-guardian": "src/server.js" },
-  "files": ["src", "README.md", "LICENSE"],
+  "bin": {
+    "mcp-api-guardian": "src/server.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node src/server.js",
     "start:hosted": "node --env-file=.env src/hosted.js",
     "test": "node --test",
     "check": "node --check src/server.js && node --check src/guardian.js && node --check src/control-plane-client.js && node --check src/hosted.js"
   },
-  "engines": { "node": ">=22" },
-  "license": "MIT"
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petrovicistefan/mcp-api-guardian.git"
+  },
+  "homepage": "https://github.com/petrovicistefan/mcp-api-guardian#readme",
+  "bugs": {
+    "url": "https://github.com/petrovicistefan/mcp-api-guardian/issues"
+  },
+  "author": "Stefan Petrovici",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "openapi",
+    "api",
+    "breaking-changes",
+    "ai-agents"
+  ]
 }

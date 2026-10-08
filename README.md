@@ -38,7 +38,7 @@ The package has not been published to npm. After publication, clients can use `n
 
 ## Hosted path (quotas via control plane)
 
-The local stdio MCP server above stays fully useful without an account or network. Quotas are enforced only by a separate hosted HTTP process that reserves units on [mcp-control-plane](../mcp-control-plane) before running the same analysis core.
+The local stdio MCP server above stays fully useful without an account or network. Quotas are enforced only by a separate hosted HTTP process that reserves units on mcp-control-plane before running the same analysis core.
 
 ```sh
 # Terminal 1 — control plane (see its README for ADMIN_TOKEN)
