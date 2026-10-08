@@ -18,7 +18,7 @@ for await (const line of readline.createInterface({input:process.stdin,crlfDelay
   if (req.method==='initialize') {
     initialized=true;
     const supported=['2025-11-25','2025-06-18','2025-03-26','2024-11-05'];
-    result={protocolVersion:supported.includes(req.params?.protocolVersion)?req.params.protocolVersion:'2025-11-25',capabilities:{tools:{}},serverInfo:{name:'mcp-api-guardian',version:'0.1.0'}};
+    result={protocolVersion:supported.includes(req.params?.protocolVersion)?req.params.protocolVersion:'2025-11-25',capabilities:{tools:{}},serverInfo:{name:'mcp-api-guardian',version:'0.1.1'}};
   } else if (req.method==='ping') result={};
   else if (!initialized) {error(req.id,-32000,'Initialize first');continue;}
   else if (req.method==='tools/list') result={tools};

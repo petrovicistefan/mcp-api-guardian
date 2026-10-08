@@ -1,6 +1,6 @@
 {
   "name": "mcp-api-guardian",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local OpenAPI contract and breaking-change checks for AI agents",
   "mcpName": "io.github.petrovicistefan/mcp-api-guardian",
   "type": "module",
