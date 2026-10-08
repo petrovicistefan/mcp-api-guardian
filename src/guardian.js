@@ -9,14 +9,25 @@ export function validate(doc) {
 function operations(doc) {
   return Object.entries(doc.paths).flatMap(([path, item]) => methods.filter(m => item?.[m]).map(method => ({path, method, item, op: item[method]})));
 }
-function refs(value, visit, path = '') {
-  if (!value || typeof value !== 'object') return;
+function refs(value, visit, path = '', seen = new WeakSet()) {
+  if (!value || typeof value !== 'object' || seen.has(value)) return;
+  seen.add(value);
   if (typeof value.$ref === 'string') visit(value.$ref, path);
-  for (const [k,v] of Object.entries(value)) refs(v, visit, `${path}/${k}`);
+  for (const [k,v] of Object.entries(value)) refs(v, visit, `${path}/${k}`, seen);
 }
 function resolve(doc, ref) {
   if (!ref.startsWith('#/')) return undefined;
   return ref.slice(2).split('/').reduce((v,k) => own(v, k.replace(/~1/g,'/').replace(/~0/g,'~')) ? v[k.replace(/~1/g,'/').replace(/~0/g,'~')] : undefined, doc);
+}
+function effectiveParams(doc, item, op) {
+  const combined = new Map();
+  for (const p of [...(item.parameters ?? []), ...(op.parameters ?? [])]) {
+    const resolved = p?.$ref ? resolve(doc, p.$ref) : p;
+    if (resolved && typeof resolved === 'object' && resolved.name && resolved.in) {
+      combined.set(`${resolved.in}:${resolved.name}`, resolved);
+    }
+  }
+  return [...combined.values()];
 }
 function report(findings, coverage) {
   return {findings, summary: {errors: findings.filter(f=>f.severity==='error').length, warnings: findings.filter(f=>f.severity==='warning').length}, coverage};
@@ -41,7 +52,7 @@ export function auditOpenApi(input) {
     for (const requirement of security ?? []) for (const scheme of Object.keys(requirement)) {
       if (!own(doc.components?.securitySchemes,scheme)) add('UNKNOWN_SECURITY_SCHEME','error',loc,`Unknown security scheme: ${scheme}`);
     }
-    const params=[...(item.parameters??[]),...(op.parameters??[])].map(p=>p.$ref?resolve(doc,p.$ref):p).filter(Boolean);
+    const params=effectiveParams(doc,item,op);
     for (const name of [...path.matchAll(/\{([^}]+)\}/g)].map(m=>m[1])) {
       if (!params.some(p=>p.in==='path' && p.name===name && p.required===true)) add('MISSING_PATH_PARAMETER','error',loc,`Path parameter ${name} must be declared and required`);
     }
@@ -60,12 +71,12 @@ export function compareOpenApi(before,after) {
     const next=after.paths[path]?.[method], loc=`${method.toUpperCase()} ${path}`;
     if (!next) { add('OPERATION_REMOVED',loc,'Previously available operation removed'); continue; }
     if (op.operationId && next.operationId!==op.operationId) add('OPERATION_ID_CHANGED',loc,'Generated clients or agents may depend on operationId');
-    const oldParams=[...(item.parameters??[]),...(op.parameters??[])];
-    const newParams=[...(after.paths[path].parameters??[]),...(next.parameters??[])];
+    const oldParams=effectiveParams(before,item,op);
+    const newParams=effectiveParams(after,after.paths[path],next);
     for (const p of newParams) if (p.required && !oldParams.some(q=>q.name===p.name && q.in===p.in && q.required)) add('REQUIRED_PARAMETER_ADDED',loc,`New required parameter: ${p.in}/${p.name}`);
     if (next.requestBody?.required && !op.requestBody?.required) add('REQUEST_BODY_REQUIRED',loc,'Request body became required');
     for (const status of Object.keys(op.responses??{})) if (!own(next.responses,status)) add('RESPONSE_REMOVED',loc,`Response ${status} removed`);
     if (JSON.stringify(op.security??before.security??[])!==JSON.stringify(next.security??after.security??[])) findings.push({code:'SECURITY_CHANGED',severity:'warning',location:loc,message:'Authentication requirements changed; review compatibility'});
   }
-  return report(findings,'Operation, operationId, inline required parameters, request body requirement, response codes and security changes. Schema compatibility and referenced parameter changes are not checked.');
+  return report(findings,'Operation, operationId, inline required parameters, request body requirement, response codes and security changes. Schema compatibility is not checked; local referenced parameters are resolved.');
 }
