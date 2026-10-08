@@ -34,7 +34,7 @@ npm test
 npm pack
 ```
 
-The package has not been published to npm. After publication, clients can use `npx -y mcp-api-guardian`. Availability of the npm name has not been confirmed.
+Clients can use `npx -y mcp-api-guardian`.
 
 ## Hosted path (quotas via control plane)
 
@@ -70,4 +70,4 @@ This hosted path is a reference integration, not a published multi-tenant deploy
 3. Validate demand with API teams using real release diffs.
 4. Offer managed history, CI integration, shared policies and team reporting as Pro (hosted path above is the quota hook).
 
-The prior Free allowance of 20 checks/month and Pro price of EUR 12/month are hypotheses, not implemented limits. A local MIT package cannot reliably enforce paid quotas; those belong to an authenticated hosted service. Keep the useful local tool free.
+A local MIT package cannot reliably enforce paid quotas; those belong to an authenticated hosted service. Keep the useful local tool free.
