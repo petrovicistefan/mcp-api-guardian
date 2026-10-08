@@ -1,13 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import http from 'node:http';
 import { createHostedServer } from '../src/hosted.js';
 import { consume } from '../src/control-plane-client.js';
 
-const controlPlaneRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'mcp-control-plane');
-const { Store } = await import(join(controlPlaneRoot, 'src', 'store.js'));
-const { createServer } = await import(join(controlPlaneRoot, 'src', 'server.js'));
+const KEY = 'mcp_test_key';
 
 const spec = () => ({
   openapi: '3.1.0',
@@ -30,10 +27,39 @@ async function listen(server) {
   return `http://127.0.0.1:${server.address().port}`;
 }
 
+/** Minimal control-plane stand-in so CI does not need a sibling checkout. */
+function createFakeControlPlane({ limit = 2 } = {}) {
+  const seen = new Map();
+  let used = 0;
+  const events = [];
+  const server = http.createServer(async (req, res) => {
+    const send = (status, body) => {
+      res.writeHead(status, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(body));
+    };
+    if (req.method !== 'POST' || new URL(req.url, 'http://x').pathname !== '/v1/usage/consume') {
+      return send(404, { error: 'not_found' });
+    }
+    if ((req.headers.authorization ?? '') !== `Bearer ${KEY}`) return send(401, { error: 'unauthorized' });
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const body = JSON.parse(Buffer.concat(chunks).toString());
+    events.push(body);
+    const prev = seen.get(body.requestId);
+    if (prev !== undefined) {
+      if (prev !== body.units) return send(409, { error: 'request_id_conflict' });
+      return send(200, { allowed: true, duplicate: true, used, limit });
+    }
+    if (used + body.units > limit) return send(429, { allowed: false, used, limit, error: 'quota_exceeded' });
+    used += body.units;
+    seen.set(body.requestId, body.units);
+    return send(200, { allowed: true, duplicate: false, used, limit });
+  });
+  return { server, events };
+}
+
 test('hosted audit consumes quota, retries, rejects over-quota and bad keys; specs never reach control plane', async t => {
-  const store = new Store();
-  const admin = 'a'.repeat(32);
-  const controlPlane = createServer({ store, adminToken: admin, limits: { free: 2, paid: 10 } });
+  const { server: controlPlane, events } = createFakeControlPlane();
   const controlPlaneUrl = await listen(controlPlane);
 
   const consumeCalls = [];
@@ -50,17 +76,8 @@ test('hosted audit consumes quota, retries, rejects over-quota and bad keys; spe
       new Promise(resolve => controlPlane.close(resolve)),
       new Promise(resolve => hosted.close(resolve)),
     ]);
-    store.close();
   });
 
-  const adminCall = async (path, body, method = 'POST') => {
-    const response = await fetch(`${controlPlaneUrl}${path}`, {
-      method,
-      headers: { Authorization: `Bearer ${admin}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    return { status: response.status, body: await response.json() };
-  };
   const hostedCall = async (path, token, body) => {
     const response = await fetch(`${hostedUrl}${path}`, {
       method: 'POST',
@@ -71,45 +88,44 @@ test('hosted audit consumes quota, retries, rejects over-quota and bad keys; spe
   };
 
   assert.equal((await fetch(`${hostedUrl}/health`)).status, 200);
-  assert.equal((await adminCall('/v1/admin/accounts', { accountId: 'team-1' })).status, 201);
-  const { key } = (await adminCall('/v1/admin/keys', { accountId: 'team-1' })).body;
 
   const auditBody = { requestId: 'scan-1', spec: spec() };
-  const first = await hostedCall('/v1/audit', key, auditBody);
+  const first = await hostedCall('/v1/audit', KEY, auditBody);
   assert.equal(first.status, 200);
   assert.equal(first.body.report.summary.errors, 0);
   assert.equal(first.body.usage.used, 1);
   assert.equal(first.body.usage.duplicate, false);
 
-  const retry = await hostedCall('/v1/audit', key, auditBody);
+  const retry = await hostedCall('/v1/audit', KEY, auditBody);
   assert.equal(retry.status, 200);
   assert.equal(retry.body.usage.duplicate, true);
   assert.equal(retry.body.usage.used, 1);
 
-  const second = await hostedCall('/v1/audit', key, { requestId: 'scan-2', spec: spec() });
+  const second = await hostedCall('/v1/audit', KEY, { requestId: 'scan-2', spec: spec() });
   assert.equal(second.status, 200);
   assert.equal(second.body.usage.used, 2);
 
-  const over = await hostedCall('/v1/audit', key, { requestId: 'scan-3', spec: spec() });
+  const over = await hostedCall('/v1/audit', KEY, { requestId: 'scan-3', spec: spec() });
   assert.equal(over.status, 429);
   assert.equal(over.body.error, 'quota_exceeded');
 
   assert.equal((await hostedCall('/v1/audit', 'bad-key', auditBody)).status, 401);
 
-  const compare = await hostedCall('/v1/compare', key, {
+  const compare = await hostedCall('/v1/compare', KEY, {
     requestId: 'scan-compare',
     before: spec(),
     after: { ...spec(), paths: {} },
   });
-  // free limit 2 already exhausted — compare must not run analysis
   assert.equal(compare.status, 429);
 
   for (const payload of consumeCalls) {
     assert.deepEqual(Object.keys(payload).sort(), ['product', 'requestId', 'units']);
     assert.equal(payload.product, 'api-guardian');
     assert.equal('spec' in payload, false);
-    assert.equal('before' in payload, false);
-    assert.equal('after' in payload, false);
+  }
+  for (const event of events) {
+    assert.deepEqual(Object.keys(event).sort(), ['product', 'requestId', 'units']);
+    assert.equal('spec' in event, false);
   }
 });
 
