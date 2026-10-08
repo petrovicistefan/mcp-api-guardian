@@ -4,6 +4,71 @@ Local OpenAPI contract checks for AI coding agents. MVP 0.1.0, no runtime depend
 
 Transport: newline-delimited JSON-RPC over stdio, with the initialize-based MCP protocol family through 2025-11-25. The newer 2026-07-28 stateless protocol is not implemented. Test with your target client before deployment. Protocol reference: https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
 
+## Install in your AI client
+
+Works with any MCP client over stdio; no account or API key needed for the local server.
+
+**Claude Code**
+
+```sh
+claude mcp add api-guardian -- npx -y mcp-api-guardian
+```
+
+**Codex CLI**
+
+```sh
+codex mcp add api-guardian -- npx -y mcp-api-guardian
+```
+
+**Claude Desktop, Cursor, Windsurf, Cline, Gemini CLI** — add to the client's MCP config (`claude_desktop_config.json`, `~/.cursor/mcp.json`, `~/.codeium/windsurf/mcp_config.json`, Cline MCP settings, `~/.gemini/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "api-guardian": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-api-guardian"
+      ]
+    }
+  }
+}
+```
+
+**VS Code / GitHub Copilot** — `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "api-guardian": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-api-guardian"
+      ]
+    }
+  }
+}
+```
+
+**Zed** — `settings.json`:
+
+```json
+{
+  "context_servers": {
+    "api-guardian": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-api-guardian"
+      ]
+    }
+  }
+}
+```
+
 ## Run from source
 
 ```sh

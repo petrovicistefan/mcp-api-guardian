@@ -2,6 +2,7 @@
   "name": "mcp-api-guardian",
   "version": "0.1.0",
   "description": "Local OpenAPI contract and breaking-change checks for AI agents",
+  "mcpName": "io.github.petrovicistefan/mcp-api-guardian",
   "type": "module",
   "bin": {
     "mcp-api-guardian": "src/server.js"
@@ -36,6 +37,11 @@
     "openapi",
     "api",
     "breaking-changes",
-    "ai-agents"
+    "ai-agents",
+    "mcp-server",
+    "claude",
+    "cursor",
+    "codex",
+    "copilot"
   ]
 }
