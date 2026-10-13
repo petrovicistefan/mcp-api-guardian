@@ -136,3 +136,11 @@ This hosted path is a reference integration, not a published multi-tenant deploy
 4. Offer managed history, CI integration, shared policies and team reporting as Pro (hosted path above is the quota hook).
 
 A local MIT package cannot reliably enforce paid quotas; those belong to an authenticated hosted service. Keep the useful local tool free.
+
+---
+
+## ⭐ Support this project
+
+**Found this MCP useful? [Star this repository](https://github.com/petrovicistefan/mcp-api-guardian)!**
+
+A GitHub star helps other developers discover the project and lets you save it for later. Thanks for supporting open source!
