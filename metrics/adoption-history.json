@@ -341,5 +341,54 @@
         "publishedAt": "2026-10-19T11:10:09Z"
       }
     }
+  },
+  {
+    "date": "2026-10-20",
+    "npm": {
+      "downloads24h": 7,
+      "downloads7d": 29,
+      "version": "0.1.2",
+      "publishedAt": "2026-10-19T11:09:52.639Z"
+    },
+    "github": {
+      "stars": 0,
+      "forks": 0,
+      "watchers": 0,
+      "openIssues": 0,
+      "openPullRequests": 0,
+      "contributors": 4,
+      "contributorsMayBeTruncated": false,
+      "recentCommits": [
+        {
+          "sha": "9026c3557a3b81b3b261650e46fcaad1e93af537",
+          "date": "2026-10-19T14:37:57Z",
+          "message": "chore(metrics): record daily adoption snapshot"
+        },
+        {
+          "sha": "6bbdb8a3fef45ea89f4a3c0d95229961f41d8aa2",
+          "date": "2026-10-19T11:05:36Z",
+          "message": "Merge pull request #1 from petrovicistefan/cursor/readme-optimization-v0.1.2-8c50"
+        },
+        {
+          "sha": "15733c5cdae258ba1592c271e5f51328a7fdc6de",
+          "date": "2026-10-19T11:02:03Z",
+          "message": "docs: rewrite README and bump to v0.1.2"
+        },
+        {
+          "sha": "e39bb7650e3f514927f935506ced4d2f8712ef33",
+          "date": "2026-10-18T12:01:55Z",
+          "message": "chore(metrics): record daily adoption snapshot"
+        },
+        {
+          "sha": "327d1102b3a430746a7acfa5b67954af6745aed6",
+          "date": "2026-10-17T11:34:13Z",
+          "message": "chore(metrics): record daily adoption snapshot"
+        }
+      ],
+      "latestRelease": {
+        "tag": "v0.1.2",
+        "publishedAt": "2026-10-19T11:10:09Z"
+      }
+    }
   }
 ]
