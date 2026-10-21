@@ -34,8 +34,11 @@ Zero configuration. No API keys. No network. Runs entirely on your machine via t
 
 ### One-Click Install
 
-**Cursor:**  
-<a href="https://cursor.com/settings/mcp?name=api-guardian&config=eyJhcGktZ3VhcmRpYW4iOnsiY29tbWFuZCI6Im5weCIsImFyZ3MiOlsiLXkiLCJtY3AtYXBpLWd1YXJkaWFuIl19fQ%3D%3D"><img src="https://img.shields.io/badge/Add%20to-Cursor-blue?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkw0IDIwSDIwTDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==" alt="Add to Cursor" /></a>
+**Cursor:**
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=api-guardian&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIm1jcC1hcGktZ3VhcmRpYW4iXX0=)
+
+Or use the direct protocol link: `cursor://anysphere.cursor-deeplink/mcp/install?name=api-guardian&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIm1jcC1hcGktZ3VhcmRpYW4iXX0=`
 
 **Claude Code:**
 
