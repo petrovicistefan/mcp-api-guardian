@@ -4,6 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/mcp-api-guardian.svg)](https://www.npmjs.com/package/mcp-api-guardian)
 [![npm downloads](https://img.shields.io/npm/dm/mcp-api-guardian.svg)](https://www.npmjs.com/package/mcp-api-guardian)
+[![Glama](https://glama.ai/mcp/servers/petrovicistefan/mcp-api-guardian/badges/score.svg)](https://glama.ai/mcp/servers/petrovicistefan/mcp-api-guardian)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Local-first guardrails for AI coding agents working with OpenAPI specs: **catch contract errors** (missing operation IDs, unresolved references, public auth), **detect breaking changes** (removed operations, new required parameters, changed authentication), and **keep API consumers working** before you ship.
@@ -14,9 +15,9 @@ Zero configuration. No API keys. No network. Runs entirely on your machine via t
 
 ## Table of Contents
 
-- [Quickstart](#quickstart)
+- [Quick Install](#quick-install)
 - [Why API Guardian](#why-api-guardian)
-- [Features](#features)
+- [Tools](#tools)
 - [Use Cases](#use-cases)
 - [Comparison with Alternatives](#comparison-with-alternatives)
 - [Limitations](#limitations)
@@ -29,17 +30,33 @@ Zero configuration. No API keys. No network. Runs entirely on your machine via t
 
 ---
 
-## Quickstart
+## Quick Install
 
-**One-line install** for any MCP client (Claude Desktop, Cursor, VS Code Copilot, Windsurf, Cline, Zed):
+### One-Click Install
+
+**Cursor:**
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=api-guardian&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIm1jcC1hcGktZ3VhcmRpYW4iXX0=)
+
+Or use the direct protocol link: `cursor://anysphere.cursor-deeplink/mcp/install?name=api-guardian&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIm1jcC1hcGktZ3VhcmRpYW4iXX0=`
+
+**Claude Code:**
 
 ```bash
-npx -y mcp-api-guardian
+claude mcp add api-guardian -- npx -y mcp-api-guardian
 ```
 
-### Claude Desktop / Cursor
+Or if installed in the [petrovicistefan/mcp-marketplace](https://github.com/petrovicistefan/mcp-marketplace):
 
-Add to your MCP config (`claude_desktop_config.json` or `~/.cursor/mcp.json`):
+```bash
+/plugin marketplace add petrovicistefan/mcp-marketplace
+```
+
+### Manual Install
+
+**Claude Desktop:**
+
+Add to `claude_desktop_config.json`:
 
 ```json
 {
@@ -52,9 +69,26 @@ Add to your MCP config (`claude_desktop_config.json` or `~/.cursor/mcp.json`):
 }
 ```
 
-### VS Code / GitHub Copilot
+**Cursor:**
 
-Create or edit `.vscode/mcp.json`:
+Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "api-guardian": {
+      "command": "npx",
+      "args": ["-y", "mcp-api-guardian"]
+    }
+  }
+}
+```
+
+**VS Code / GitHub Copilot:**
+
+[![Add to VS Code](https://img.shields.io/badge/Add%20to-VS%20Code-007ACC?style=flat&logo=visual-studio-code)](https://insiders.vscode.dev/redirect/mcp/install?name=api-guardian&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22mcp-api-guardian%22%5D%7D)
+
+Or manually create/edit `.vscode/mcp.json`:
 
 ```json
 {
@@ -68,7 +102,7 @@ Create or edit `.vscode/mcp.json`:
 }
 ```
 
-### Windsurf
+**Windsurf:**
 
 Add to `~/.codeium/windsurf/mcp_config.json`:
 
@@ -83,7 +117,7 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-### Zed
+**Zed:**
 
 Add to your Zed `settings.json`:
 
@@ -98,7 +132,11 @@ Add to your Zed `settings.json`:
 }
 ```
 
-<!-- TODO: Add demo GIF showing audit_openapi and compare_openapi in action -->
+**Direct npx (one-line test):**
+
+```bash
+npx -y mcp-api-guardian
+```
 
 ---
 
@@ -129,9 +167,14 @@ Fully local, read-only, zero dependencies. No telemetry, no API keys, no network
 
 ---
 
-## Features
+## Tools
 
-API Guardian exposes **2 MCP tools** for validating OpenAPI 3.0.x and 3.1.x documents:
+API Guardian provides **2 MCP tools** for validating OpenAPI 3.0.x and 3.1.x documents:
+
+| Tool | Description | Inputs |
+|------|-------------|--------|
+| **`audit_openapi`** | Static OpenAPI 3.0/3.1 lint and authentication declaration review. Does not call endpoints. | `spec` (object): OpenAPI document as JSON |
+| **`compare_openapi`** | Find selected breaking changes between two OpenAPI documents; not exhaustive schema compatibility. | `before` (object): Original OpenAPI document<br>`after` (object): Updated OpenAPI document |
 
 ### `audit_openapi({spec})`
 
@@ -311,7 +354,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) if it exists, or open an issue if you'd l
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+**MIT** — Free for personal and commercial use. See [LICENSE](LICENSE) for full terms.
 
 ---
 

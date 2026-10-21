@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "api-guardian": {
+      "command": "npx",
+      "args": ["-y", "mcp-api-guardian"]
+    }
+  }
+}
