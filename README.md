@@ -4,6 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/mcp-api-guardian.svg)](https://www.npmjs.com/package/mcp-api-guardian)
 [![npm downloads](https://img.shields.io/npm/dm/mcp-api-guardian.svg)](https://www.npmjs.com/package/mcp-api-guardian)
+[![Glama](https://glama.ai/mcp/servers/petrovicistefan/mcp-api-guardian/badge)](https://glama.ai/mcp/servers/petrovicistefan/mcp-api-guardian)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Local-first guardrails for AI coding agents working with OpenAPI specs: **catch contract errors** (missing operation IDs, unresolved references, public auth), **detect breaking changes** (removed operations, new required parameters, changed authentication), and **keep API consumers working** before you ship.
@@ -14,9 +15,9 @@ Zero configuration. No API keys. No network. Runs entirely on your machine via t
 
 ## Table of Contents
 
-- [Quickstart](#quickstart)
+- [Quick Install](#quick-install)
+- [Tools](#tools)
 - [Why API Guardian](#why-api-guardian)
-- [Features](#features)
 - [Use Cases](#use-cases)
 - [Comparison with Alternatives](#comparison-with-alternatives)
 - [Limitations](#limitations)
@@ -29,17 +30,15 @@ Zero configuration. No API keys. No network. Runs entirely on your machine via t
 
 ---
 
-## Quickstart
+## Quick Install
 
-**One-line install** for any MCP client (Claude Desktop, Cursor, VS Code Copilot, Windsurf, Cline, Zed):
+### Cursor
 
-```bash
-npx -y mcp-api-guardian
-```
+**One-click install:**
 
-### Claude Desktop / Cursor
+[![Add to Cursor](https://img.shields.io/badge/Add_to-Cursor-black?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMiAyMkwyMiAyMkwxMiAyWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==)](cursor://anysphere.cursor-deeplink/mcp/install?name=api-guardian&config=eyJhcGktZ3VhcmRpYW4iOnsiY29tbWFuZCI6Im5weCIsImFyZ3MiOlsiLXkiLCJtY3AtYXBpLWd1YXJkaWFuIl19fQ==)
 
-Add to your MCP config (`claude_desktop_config.json` or `~/.cursor/mcp.json`):
+Or add to `~/.cursor/mcp.json`:
 
 ```json
 {
@@ -50,6 +49,33 @@ Add to your MCP config (`claude_desktop_config.json` or `~/.cursor/mcp.json`):
     }
   }
 }
+```
+
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "api-guardian": {
+      "command": "npx",
+      "args": ["-y", "mcp-api-guardian"]
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add api-guardian -- npx -y mcp-api-guardian
+```
+
+Or add to MCP Marketplace:
+
+```bash
+/plugin marketplace add petrovicistefan/mcp-marketplace
 ```
 
 ### VS Code / GitHub Copilot
@@ -98,7 +124,22 @@ Add to your Zed `settings.json`:
 }
 ```
 
-<!-- TODO: Add demo GIF showing audit_openapi and compare_openapi in action -->
+### CLI / Any MCP Client
+
+```bash
+npx -y mcp-api-guardian
+```
+
+---
+
+## Tools
+
+| Tool | Description | Key Inputs |
+|------|-------------|------------|
+| **`audit_openapi`** | Static OpenAPI 3.0/3.1 lint and authentication declaration review. Checks for contract errors (unresolved `$ref`, missing metadata), operation issues (missing/duplicate `operationId`), path parameter validation, and security warnings (public endpoints, basic auth over HTTP, API keys in query strings). Does not call endpoints. | `spec` (object) — Parsed OpenAPI 3.0.x or 3.1.x JSON document |
+| **`compare_openapi`** | Find selected breaking changes between two OpenAPI documents. Detects removed operations, changed operation IDs, new required parameters, request body requirement changes, removed response codes, and security changes. Not exhaustive schema compatibility analysis. | `before` (object), `after` (object) — Two parsed OpenAPI JSON documents to compare |
+
+**Coverage limits:** API Guardian is a targeted linter, not a complete OpenAPI validator. External `$ref` references are flagged but not fetched, schema compatibility is not checked, and no live HTTP probes are performed. See [Limitations](#limitations) for details.
 
 ---
 
@@ -120,43 +161,9 @@ AI coding agents increasingly **modify OpenAPI specs** as they work on API featu
 - Accidentally publish a public endpoint with no authentication
 - Break external references or introduce duplicate IDs
 
-**API Guardian catches these before they break production.** It provides two MCP tools your AI agent can call:
-
-1. **`audit_openapi`** — lints a single OpenAPI spec for contract errors, missing metadata, auth risks
-2. **`compare_openapi`** — diffs two spec versions and detects breaking changes
+**API Guardian catches these before they break production.** It provides two MCP tools your AI agent can call — see the [Tools](#tools) section above for details.
 
 Fully local, read-only, zero dependencies. No telemetry, no API keys, no network calls.
-
----
-
-## Features
-
-API Guardian exposes **2 MCP tools** for validating OpenAPI 3.0.x and 3.1.x documents:
-
-### `audit_openapi({spec})`
-
-Static contract checks on a single OpenAPI spec:
-
-- **Contract errors**: Unresolved `$ref` references, missing `info.title`/`info.version`, invalid paths
-- **Operation metadata**: Missing or duplicate `operationId`, missing response definitions
-- **Path parameters**: All `{param}` placeholders must be declared as required path parameters
-- **Security warnings**: Public operations (no auth required), basic auth over HTTP, API keys in query strings
-- **External references**: Flags unchecked external `$ref` URLs (not fetched)
-
-Reports errors and warnings with severity, location, and actionable messages. Explicitly states coverage limits.
-
-### `compare_openapi({before, after})`
-
-Breaking-change detection between two OpenAPI spec versions:
-
-- **Removed operations**: Previously available endpoints deleted
-- **Changed operation IDs**: Generated clients and agents may depend on stable IDs
-- **New required parameters**: Added inline required parameters (clients can't provide them)
-- **Request body requirement**: Optional body became required
-- **Removed response codes**: Status codes clients may handle are gone
-- **Security changes**: Authentication requirements modified (warning-level)
-
-Reports definite breaks (`error`) and potential compatibility issues (`warning`). Schema variance and composed schemas are **not yet analyzed** (see [Limitations](#limitations)).
 
 ---
 
