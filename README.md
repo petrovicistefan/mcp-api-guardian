@@ -86,7 +86,9 @@ Add to `~/.cursor/mcp.json`:
 
 **VS Code / GitHub Copilot:**
 
-Create or edit `.vscode/mcp.json`:
+[![Add to VS Code](https://img.shields.io/badge/Add%20to-VS%20Code-007ACC?style=flat&logo=visual-studio-code)](https://insiders.vscode.dev/redirect/mcp/install?name=api-guardian&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22mcp-api-guardian%22%5D%7D)
+
+Or manually create/edit `.vscode/mcp.json`:
 
 ```json
 {
