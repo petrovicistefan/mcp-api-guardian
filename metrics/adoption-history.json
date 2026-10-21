@@ -390,5 +390,54 @@
         "publishedAt": "2026-10-19T11:10:09Z"
       }
     }
+  },
+  {
+    "date": "2026-10-21",
+    "npm": {
+      "downloads24h": 7,
+      "downloads7d": 29,
+      "version": "0.1.2",
+      "publishedAt": "2026-10-19T11:09:52.639Z"
+    },
+    "github": {
+      "stars": 0,
+      "forks": 0,
+      "watchers": 0,
+      "openIssues": 0,
+      "openPullRequests": 0,
+      "contributors": 4,
+      "contributorsMayBeTruncated": false,
+      "recentCommits": [
+        {
+          "sha": "368d599d261fc61715f282d87d612bfc68f77316",
+          "date": "2026-10-21T07:40:21Z",
+          "message": "Make MCP server discoverable and easy to install (#3)"
+        },
+        {
+          "sha": "1fdb60a9b27e5a757109318d958b251eadcb9229",
+          "date": "2026-10-20T12:41:40Z",
+          "message": "chore(metrics): record daily adoption snapshot"
+        },
+        {
+          "sha": "9026c3557a3b81b3b261650e46fcaad1e93af537",
+          "date": "2026-10-19T14:37:57Z",
+          "message": "chore(metrics): record daily adoption snapshot"
+        },
+        {
+          "sha": "6bbdb8a3fef45ea89f4a3c0d95229961f41d8aa2",
+          "date": "2026-10-19T11:05:36Z",
+          "message": "Merge pull request #1 from petrovicistefan/cursor/readme-optimization-v0.1.2-8c50"
+        },
+        {
+          "sha": "15733c5cdae258ba1592c271e5f51328a7fdc6de",
+          "date": "2026-10-19T11:02:03Z",
+          "message": "docs: rewrite README and bump to v0.1.2"
+        }
+      ],
+      "latestRelease": {
+        "tag": "v0.1.2",
+        "publishedAt": "2026-10-19T11:10:09Z"
+      }
+    }
   }
 ]
