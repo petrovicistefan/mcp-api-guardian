@@ -1,6 +1,6 @@
 # MCP API Guardian
 
-**Stop your AI agent from breaking your API: OpenAPI contract checks and breaking-change diffs over MCP, fully local.**
+**MCP server for OpenAPI contract checks and breaking-change detection — stop your AI agent from breaking your API. Fully local, no API keys.**
 
 [![npm version](https://img.shields.io/npm/v/mcp-api-guardian.svg)](https://www.npmjs.com/package/mcp-api-guardian)
 [![npm downloads](https://img.shields.io/npm/dm/mcp-api-guardian.svg)](https://www.npmjs.com/package/mcp-api-guardian)
@@ -9,7 +9,11 @@
 
 Local-first guardrails for AI coding agents working with OpenAPI specs: **catch contract errors** (missing operation IDs, unresolved references, public auth), **detect breaking changes** (removed operations, new required parameters, changed authentication), and **keep API consumers working** before you ship.
 
+Two tools for Claude Code, Cursor, Codex and any MCP client: `audit_openapi` lints an OpenAPI 3.0/3.1 spec for contract and auth problems, and `compare_openapi` diffs two spec versions to find breaking API changes before they reach consumers.
+
 Zero configuration. No API keys. No network. Runs entirely on your machine via the [Model Context Protocol](https://modelcontextprotocol.io).
+
+> **Part of the [petrovicistefan MCP suite](https://github.com/petrovicistefan/mcp-marketplace)** — local-first guardrails for AI coding agents (Claude Code, Cursor, Codex).
 
 ---
 
