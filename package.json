@@ -15,8 +15,11 @@
   "scripts": {
     "start": "node src/server.js",
     "start:hosted": "node --env-file=.env src/hosted.js",
-    "test": "node --test",
-    "check": "node --check src/server.js && node --check src/guardian.js && node --check src/control-plane-client.js && node --check src/hosted.js"
+    "test": "node --test test/*.test.js",
+    "check": "node --check src/server.js && node --check src/guardian.js && node --check src/control-plane-client.js && node --check src/hosted.js && node --check src/version.js && node --check scripts/check-rules.mjs",
+    "test:integration": "node test/mcp.integration.js",
+    "check:rules": "node scripts/check-rules.mjs",
+    "prepublishOnly": "npm run check && npm run check:rules && npm test && npm run test:integration"
   },
   "engines": {
     "node": ">=22"
@@ -43,5 +46,8 @@
     "cursor",
     "codex",
     "copilot"
-  ]
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  }
 }

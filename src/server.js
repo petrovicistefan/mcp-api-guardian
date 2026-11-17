@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import readline from 'node:readline';
 import {auditOpenApi,compareOpenApi} from './guardian.js';
+import {VERSION} from './version.js';
 const tools=[
   {name:'audit_openapi',description:'Static OpenAPI 3.0/3.1 lint and authentication declaration review. Does not call endpoints.',inputSchema:{type:'object',properties:{spec:{type:'object'}},required:['spec'],additionalProperties:false}},
   {name:'compare_openapi',description:'Find selected breaking changes between two OpenAPI documents; not exhaustive schema compatibility.',inputSchema:{type:'object',properties:{before:{type:'object'},after:{type:'object'}},required:['before','after'],additionalProperties:false}}
@@ -18,7 +19,7 @@ for await (const line of readline.createInterface({input:process.stdin,crlfDelay
   if (req.method==='initialize') {
     initialized=true;
     const supported=['2025-11-25','2025-06-18','2025-03-26','2024-11-05'];
-    result={protocolVersion:supported.includes(req.params?.protocolVersion)?req.params.protocolVersion:'2025-11-25',capabilities:{tools:{}},serverInfo:{name:'mcp-api-guardian',version:'0.1.2'}};
+    result={protocolVersion:supported.includes(req.params?.protocolVersion)?req.params.protocolVersion:'2025-11-25',capabilities:{tools:{}},serverInfo:{name:'mcp-api-guardian',version:VERSION}};
   } else if (req.method==='ping') result={};
   else if (!initialized) {error(req.id,-32000,'Initialize first');continue;}
   else if (req.method==='tools/list') result={tools};
